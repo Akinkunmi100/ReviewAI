@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: product-review-api
+    env: python
+    rootDir: .
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn api:app --host 0.0.0.0 --port 10000"
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false  # set in Render dashboard
+      - key: JWT_SECRET
+        sync: false  # set in Render dashboard
+
+staticSites:
+  - name: product-review-frontend
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: "https://product-review-api.onrender.com"  # update to actual Render URL after first deploy
