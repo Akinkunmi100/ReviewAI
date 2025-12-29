@@ -8390,45 +8390,76 @@ img {
   border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  height: 80vh;
-  min-height: 600px;
-  max-height: 900px;
+  height: auto;
+  min-height: 700px;
+  max-height: none;
   width: 100%;
-  max-width: 800px;
-  /* Constrain width */
-  margin: 0 auto var(--space-xl) auto;
-  /* Center horizontally */
-  box-shadow: var(--shadow-lg);
+  max-width: 100%;
+  /* Full width */
+  margin: 0 0 var(--space-xl) 0;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(99, 102, 241, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient top border accent */
+.chat-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), #10b981, var(--color-primary));
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .chat-header {
-  padding: var(--space-sm) var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-bg-soft);
+  background: linear-gradient(135deg, var(--color-bg-soft), var(--color-surface));
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  min-height: 50px;
-  /* Reduced from 60px */
+  min-height: 60px;
+  margin-top: 3px;
+  /* Account for gradient border */
 }
 
 .chat-header h3 {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--color-text-main);
+  background: linear-gradient(135deg, var(--color-primary), #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-sm) var(--space-lg) var(--space-md);
-  /* Reduced top padding */
+  padding: var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   scroll-behavior: smooth;
   background: var(--color-bg);
+  min-height: 400px;
 }
 
 .chat-msg {
