@@ -11,6 +11,7 @@ email-validator>=2.1.0,<3.0.0
 
 # Database
 sqlalchemy>=2.0.0,<3.0.0
+psycopg2-binary>=2.9.0,<3.0.0  # PostgreSQL driver for production
 
 # AI & NLP
 groq>=0.4.0,<1.0.0
