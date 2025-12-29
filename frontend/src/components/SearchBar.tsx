@@ -29,14 +29,15 @@ const SearchBar: React.FC<Props> = ({ onAnalyze, dataMode, setDataMode }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    
+
     const validationError = validateInput(value);
     if (validationError) {
       setError(validationError);
       return;
     }
-    
+
     onAnalyze(value.trim());
+    setValue(""); // Clear search input after successful search
   };
 
   return (
@@ -53,42 +54,42 @@ const SearchBar: React.FC<Props> = ({ onAnalyze, dataMode, setDataMode }) => {
           onKeyDown={(e) => e.key === 'Enter' && handleSubmit(e)}
           aria-invalid={!!error}
         />
-      <div className="search-options">
-        <label>
-          <input
-            type="radio"
-            checked={dataMode === "web"}
-            onChange={() => setDataMode("web")}
-          />
-          <span>Web search</span>
-        </label>
-        <label>
-          <input
-            type="radio"
-            checked={dataMode === "hybrid"}
-            onChange={() => setDataMode("hybrid")}
-          />
-          <span>Hybrid (web + AI)</span>
-        </label>
-        <label>
-          <input
-            type="radio"
-            checked={dataMode === "ai"}
-            onChange={() => setDataMode("ai")}
-          />
-          <span>AI knowledge</span>
-        </label>
-      </div>
-      <button type="submit" disabled={!value.trim()}>
-        <Sparkles size={18} />
-        Analyze
-      </button>
-    </form>
-    {error && (
-      <div style={{ color: 'var(--color-error, #e74c3c)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
-        {error}
-      </div>
-    )}
+        <div className="search-options">
+          <label>
+            <input
+              type="radio"
+              checked={dataMode === "web"}
+              onChange={() => setDataMode("web")}
+            />
+            <span>Web search</span>
+          </label>
+          <label>
+            <input
+              type="radio"
+              checked={dataMode === "hybrid"}
+              onChange={() => setDataMode("hybrid")}
+            />
+            <span>Hybrid (web + AI)</span>
+          </label>
+          <label>
+            <input
+              type="radio"
+              checked={dataMode === "ai"}
+              onChange={() => setDataMode("ai")}
+            />
+            <span>AI knowledge</span>
+          </label>
+        </div>
+        <button type="submit" disabled={!value.trim()}>
+          <Sparkles size={18} />
+          Analyze
+        </button>
+      </form>
+      {error && (
+        <div style={{ color: 'var(--color-error, #e74c3c)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
+          {error}
+        </div>
+      )}
     </>
   );
 };
