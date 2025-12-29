@@ -298,7 +298,8 @@ class ProductImageFetcher:
     def _enhance_image_query(self, product_name: str) -> str:
         """Clean up and enhance the product name to form an image search query."""
         clean_name = ' '.join(product_name.split())
-        return f'"{clean_name}" official product image'
+        # Use exact match quotes and multiple product keywords for better accuracy
+        return f'"{clean_name}" product photo official'
 
     def _fetch_duckduckgo_images(self, product_name: str, max_images: int) -> List[ProductImage]:
         """Fetch images from DuckDuckGo with strict filtering."""
@@ -449,8 +450,10 @@ class ProductImageFetcher:
         if product_variants:
             variant_found = any(v in combined for v in product_variants)
             if not variant_found:
-                logger.debug(f"Warning: variant mismatch for {product_name}, image may be generic")
-        
+                # Strict: reject images that don't match the variant (e.g., 'Pro', 'Max', 'Ultra')
+                logger.debug(f"Rejecting image: variant mismatch for {product_name}")
+                return False
+    
         return True
     
     def _fetch_brand_images(self, product_name: str, max_images: int = 2) -> List[ProductImage]:
