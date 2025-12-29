@@ -155,6 +155,31 @@ async def health_check():
 
 
 # =============================================================================
+# Admin Cache Management
+# =============================================================================
+
+@app.post("/api/admin/clear-cache")
+async def clear_cache():
+    """Clear all cached data (images, content, search results)."""
+    import shutil
+    from pathlib import Path
+    
+    cache_dir = Path(".cache")
+    cleared_count = 0
+    
+    if cache_dir.exists():
+        for cache_file in cache_dir.glob("*.json"):
+            try:
+                cache_file.unlink()
+                cleared_count += 1
+            except Exception:
+                pass
+    
+    logger.info(f"Cache cleared: {cleared_count} entries removed")
+    return {"status": "ok", "message": f"Cleared {cleared_count} cache entries"}
+
+
+# =============================================================================
 # Include Route Modules
 # =============================================================================
 
