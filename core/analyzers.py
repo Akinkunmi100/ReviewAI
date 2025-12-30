@@ -420,12 +420,21 @@ class FakeSpotter:
         try:
             prompt = f"""
             Create a "Fake Spotter" guide for '{product_name}'.
-            The Nigerian market is flooded with high-quality fakes and refurbished units sold as new.
+            The Nigerian market has many counterfeit and refurbished products.
+        
+            IMPORTANT: Generate scams and checks SPECIFIC to this exact product type.
+            - For PHONES: Focus on fake IMEI, cloned devices, refurbished batteries
+            - For LAPTOPS: Focus on fake specs, replaced GPUs, dead pixels
+            - For APPLIANCES: Focus on fake watts, non-genuine parts, missing warranty
+            - For FASHION: Focus on stitching, labels, materials
+            - For ELECTRONICS: Focus on serial verification, genuine accessories
+            
+            DO NOT use generic examples. Every scam must be relevant to '{product_name}'.
         
             Focus on:
-            1. Risk Level: How common are fakes for this specific item?
-            2. Common Scams: "Flashgate", "Fake ROM", "Refurbished as New".
-            3. Verification Steps: Specific physical checks (screws, weight), software checks (Serial/IMEI, USSD codes), or packaging signs.
+            1. Risk Level: How common are fakes for THIS SPECIFIC item?
+            2. Common Scams: List 2-3 scams SPECIFIC to this product (not generic examples)
+            3. Verification Steps: Specific checks for THIS product type
         
             Context:
             {scraped_text[:2000]}
@@ -433,13 +442,13 @@ class FakeSpotter:
             Return JSON matching this schema:
             {{
                 "risk_level": "High/Medium/Low",
-                "common_scams": ["Scam 1", "Scam 2"],
+                "common_scams": ["Specific scam for this product", "Another specific scam"],
                 "verification_steps": [
                     {{
                         "check_type": "Physical/Software/Serial/Packaging",
-                        "instruction": "e.g. Check the charging port alignment",
-                        "expected_result": "Should be centered with no gap",
-                        "warning_sign": "Gap or plastic residue"
+                        "instruction": "Specific check for this product",
+                        "expected_result": "What authentic product should show",
+                        "warning_sign": "What indicates counterfeit"
                     }}
                 ]
             }}
@@ -557,14 +566,33 @@ class SmartSwapAnalyzer:
 
         try:
             price_str = f"{price_naira:,.0f}"
-            prompt = (
-                f"The user is considering buying a NEW '{product_name}' for NGN {price_str}. "
-                f"Identify 2-3 USED, REFURBISHED, or OLDER PREMIUM alternatives in the SAME PRODUCT CATEGORY "
-                f"available in Nigeria for roughly the SAME PRICE (NGN {price_str}). "
-                f"These alternatives must be objectively BETTER (higher specs, professional grade, premium build) than the new mid-range item. "
-                f"IMPORTANT: Match the exact product category. If Blender, suggest older Blenders. If TV, suggest older TVs. "
-                f"Return JSON with keys: recommendation (Swap Recommended or Keep Original), swaps (array of objects with product_name, price, condition, performance_diff, reason_to_buy, reason_to_avoid)"
-            )
+            prompt = f"""
+The user is considering buying a NEW '{product_name}' for ₦{price_str}.
+
+Find 2-3 USED, REFURBISHED, or OLDER PREMIUM alternatives in the SAME PRODUCT CATEGORY 
+available in Nigeria for roughly the SAME PRICE.
+
+Requirements:
+- Alternatives must be objectively BETTER (higher specs, professional grade, premium build)
+- Match the exact product category (phones→phones, TVs→TVs, blenders→blenders)
+- ALL PRICES MUST BE IN NIGERIAN NAIRA (₦) - no USD or other currencies
+- Use realistic Nigerian market prices from Jumia, Konga, or Jiji
+
+Return JSON:
+{{
+    "recommendation": "Swap Recommended" or "Keep Original",
+    "swaps": [
+        {{
+            "product_name": "Full product name",
+            "price": "₦XXX,XXX (REQUIRED - actual Nigerian market price)",
+            "condition": "Used/Refurbished/Like New",
+            "performance_diff": "+XX% better in key metric",
+            "reason_to_buy": "Why this is a smart swap",
+            "reason_to_avoid": "Potential downside"
+        }}
+    ]
+}}
+"""
         
             completion = self.client.chat.completions.create(
                 messages=[

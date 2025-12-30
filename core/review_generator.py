@@ -257,8 +257,16 @@ Generate JSON with this exact structure:
 "product_name": "Full product name from sources",
 "specifications_inferred": "Concise summary of key specs found",
 "predicted_rating": "X.X / 5.0 (based on analysis)",
-"pros": ["Specific advantage 1", "Specific advantage 2", "..."],
-"cons": ["Specific disadvantage 1", "Specific disadvantage 2", "..."],
+"pros": [
+    "SPECIFIC strength with measurable claim (e.g., '4500mAh battery lasts 2 days', not 'good battery')",
+    "Real advantage mentioned in reviews - cite specific features, numbers, or comparisons",
+    "Maximum 5 pros - only include genuinely notable strengths"
+],
+"cons": [
+    "SPECIFIC weakness with detail (e.g., 'No headphone jack, requires adapter', not 'missing features')",
+    "Real pain point from user reviews - heating issues, software bugs, build quality concerns",
+    "Maximum 5 cons - only include genuine problems users report"
+],
 "verdict": "Comprehensive concluding paragraph",
 "price_info": "CRITICAL: Use CURRENT Nigerian market price in Naira (₦). For older products, use depreciated resale value, NOT launch price. Prioritize prices from Jumia, Konga, or Slot Nigeria. Format: ₦XXX,XXX - ₦XXX,XXX",
 "sources": {json.dumps(sources)},
