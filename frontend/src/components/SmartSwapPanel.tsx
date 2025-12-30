@@ -43,8 +43,19 @@ const SmartSwapPanel: React.FC<Props> = ({ review }) => {
                 {report.swaps.map((swap, idx) => {
                     const name = swap?.product_name ?? "Unknown product";
                     const condition = swap?.condition ?? "Used";
-                    const price = Number.isFinite(swap?.price) ? swap!.price : null;
-                    const priceStr = price !== null ? `~₦${price.toLocaleString()}` : "Price N/A";
+
+                    // Handle price - can be number, string, or missing
+                    let priceStr = "Price N/A";
+                    const rawPrice = swap?.price;
+                    if (rawPrice !== undefined && rawPrice !== null) {
+                        if (typeof rawPrice === 'number' && Number.isFinite(rawPrice)) {
+                            priceStr = `~₦${rawPrice.toLocaleString()}`;
+                        } else if (typeof rawPrice === 'string' && rawPrice.trim() !== '') {
+                            // Already formatted string from LLM (e.g., "₦450,000")
+                            priceStr = rawPrice;
+                        }
+                    }
+
                     const perf = swap?.performance_diff ?? "—";
                     const reasonBuy = swap?.reason_to_buy ?? "";
                     const reasonAvoid = swap?.reason_to_avoid ?? "";
