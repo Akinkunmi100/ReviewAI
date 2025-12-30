@@ -52,6 +52,9 @@ class CurrencyFormatter:
     
     def _get_usd_rates(self) -> Dict[str, float]:
         """Fetch and cache FX rates with USD as base."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
         if self._rates and self._rates_timestamp:
             if datetime.now(timezone.utc) - self._rates_timestamp < timedelta(hours=1):
                 return self._rates
@@ -66,15 +69,32 @@ class CurrencyFormatter:
                 rates = data.get('rates', {}) or {}
                 if 'NGN' not in rates:
                     rates['NGN'] = Constants.USD_TO_NGN_FALLBACK
+                    logger.warning(f"NGN rate not in API response, using fallback: {Constants.USD_TO_NGN_FALLBACK}")
+                else:
+                    logger.info(f"✓ Fetched live USD/NGN rate: {rates['NGN']}")
                 self._rates = rates
                 self._rates_timestamp = datetime.now(timezone.utc)
                 return self._rates
-        except Exception:
-            pass
+            else:
+                logger.warning(f"Exchange rate API returned status {response.status_code}, using fallback")
+        except Exception as e:
+            logger.warning(f"Exchange rate API failed ({e}), using fallback rate: {Constants.USD_TO_NGN_FALLBACK}")
 
         self._rates = {'NGN': Constants.USD_TO_NGN_FALLBACK}
         self._rates_timestamp = datetime.now(timezone.utc)
         return self._rates
+    
+    def get_current_rate(self, currency_code: str = 'USD') -> float:
+        """Get the current exchange rate for a currency to NGN."""
+        rates = self._get_usd_rates()
+        ngn_per_usd = rates.get('NGN', Constants.USD_TO_NGN_FALLBACK)
+        
+        if currency_code.upper() == 'USD':
+            return ngn_per_usd
+        
+        # For other currencies, calculate cross rate
+        code_per_usd = rates.get(currency_code.upper(), 1.0)
+        return ngn_per_usd / code_per_usd if code_per_usd else ngn_per_usd
 
     def convert_to_naira(self, amount: float, currency_code: str) -> Optional[float]:
         """Convert an amount in the given currency to Nigerian Naira."""
