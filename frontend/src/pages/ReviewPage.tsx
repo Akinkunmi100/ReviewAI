@@ -112,7 +112,13 @@ const ReviewPage: React.FC = () => {
   async function handleAnalyze(name: string) {
     const trimmed = name.trim();
     if (!trimmed) return;
+
+    // Clear previous review and reset state for new search
+    setReviewData(null);
+    setSessionId(null);
+    setConversationHistory([]);
     setProductName(trimmed);
+
     const result = await fetchReview(trimmed, dataMode, userId ?? undefined);
     if (result) {
       const entry: HistoryEntry = {
@@ -122,8 +128,6 @@ const ReviewPage: React.FC = () => {
         timestamp: new Date().toISOString(),
       };
       setHistory((prev) => [...prev, entry]);
-      setSessionId(null);
-      setConversationHistory([]);
     }
   }
 
