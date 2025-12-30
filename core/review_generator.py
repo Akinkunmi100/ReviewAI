@@ -227,12 +227,16 @@ class ReviewGenerator:
         return "\n".join(context_parts)
     
     def _get_web_review_system_prompt(self) -> str:
-        return """You are an expert product reviewer. Create a comprehensive review STRICTLY from provided sources.
+        return """You are an expert product reviewer for the NIGERIAN market. Create a comprehensive review STRICTLY from provided sources.
 
 Critical Rules:
 1. Use ONLY information from provided sources
 2. Be specific - reference actual features/specs found
-3. Include pricing if mentioned
+3. PRICING IS CRITICAL: 
+   - Always use Nigerian Naira (₦) prices
+   - Prioritize prices from Nigerian retailers (Jumia, Konga, Slot)
+   - For older products, use CURRENT resale/market value, NOT original launch price
+   - Account for depreciation based on product age
 4. Be balanced - mention both strengths and weaknesses
 5. Note conflicting information if present
 6. NEVER fabricate information
@@ -256,11 +260,17 @@ Generate JSON with this exact structure:
 "pros": ["Specific advantage 1", "Specific advantage 2", "..."],
 "cons": ["Specific disadvantage 1", "Specific disadvantage 2", "..."],
 "verdict": "Comprehensive concluding paragraph",
-"price_info": "Current pricing if found, else 'Price varies by retailer'",
+"price_info": "CRITICAL: Use CURRENT Nigerian market price in Naira (₦). For older products, use depreciated resale value, NOT launch price. Prioritize prices from Jumia, Konga, or Slot Nigeria. Format: ₦XXX,XXX - ₦XXX,XXX",
 "sources": {json.dumps(sources)},
 "last_updated": "{datetime.now(timezone.utc).strftime('%Y-%m-%d')}",
 "data_source_type": "free_web_search"
 }}
+
+PRICE RULES:
+- For 1-2 year old products: Use 60-80% of launch price
+- For 2-4 year old products: Use 30-50% of launch price  
+- For 4+ year old products: Use 20-35% of launch price
+- Always prefer Nigerian retailer prices (Jumia, Konga, Slot) over USD conversions
 
 Be critical and honest. Include issues mentioned in sources."""
     
