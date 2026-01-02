@@ -216,6 +216,13 @@ const ReviewPage: React.FC = () => {
           onSelectHistory={handleSelectHistory}
           onRemoveShortlist={handleShortlistRemove}
         />
+        {/* Compare button in sidebar */}
+        <button
+          className={`sidebar-compare-btn ${showCompare ? 'active' : ''}`}
+          onClick={() => setShowCompare(!showCompare)}
+        >
+          ⚖️ {showCompare ? 'Hide Comparison' : 'Compare Products'}
+        </button>
       </aside>
       <main className="content">
         <SearchBar
@@ -223,6 +230,23 @@ const ReviewPage: React.FC = () => {
           dataMode={dataMode}
           setDataMode={setDataMode}
         />
+
+        {/* Content Mode Tabs */}
+        <div className="content-mode-tabs">
+          <button
+            className={`mode-tab ${!showCompare ? 'active' : ''}`}
+            onClick={() => setShowCompare(false)}
+          >
+            🔍 Review
+          </button>
+          <button
+            className={`mode-tab ${showCompare ? 'active' : ''}`}
+            onClick={() => setShowCompare(true)}
+          >
+            ⚖️ Compare
+          </button>
+        </div>
+
         <GlobalAlert message={uiMessage} onClose={() => setUiMessage(null)} />
         <GlobalAlert message={error} />
         {loading && !review && (
@@ -300,15 +324,8 @@ const ReviewPage: React.FC = () => {
             <ChatPanel chat={chat} />
           </>
         )}
-        {/* Compare Products Tab */}
-        <div className="compare-toggle-section">
-          <button
-            className={`compare-toggle-btn ${showCompare ? 'active' : ''}`}
-            onClick={() => setShowCompare(!showCompare)}
-          >
-            {showCompare ? '✕ Close Comparison' : '⚖️ Compare Products'}
-          </button>
-        </div>
+
+        {/* Compare Mode Content */}
         {showCompare && <ComparisonView shortlist={shortlist} />}
       </main>
     </div>

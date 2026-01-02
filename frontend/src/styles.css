@@ -8967,3 +8967,82 @@ img {
   background: rgba(245, 158, 11, 0.2);
   border-color: #f59e0b;
 }
+
+/* ========================================
+   SIDEBAR COMPARE BUTTON
+   ======================================== */
+
+.sidebar-compare-btn {
+  width: 100%;
+  padding: var(--space-md);
+  margin-top: var(--space-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sidebar-compare-btn:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar-compare-btn.active {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: var(--shadow-glow);
+}
+
+/* ========================================
+   CONTENT MODE TABS
+   ======================================== */
+
+.content-mode-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-md) 0;
+  margin-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mode-tab {
+  flex: 1;
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mode-tab:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.mode-tab.active {
+  color: white;
+  background: var(--color-primary);
+  border-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+}
+
+:root[data-theme="dark"] .mode-tab {
+  color: var(--color-text-subtle);
+}
+
+:root[data-theme="dark"] .mode-tab.active {
+  background: var(--color-primary);
+  color: white;
+}
