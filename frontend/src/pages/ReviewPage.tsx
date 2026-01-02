@@ -43,6 +43,7 @@ const ReviewPage: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>([]);
   const [uiMessage, setUiMessage] = useState<string | null>(null);
+  const [showCompare, setShowCompare] = useState(false);
 
   const { token } = useAuth();
   const { review, loading, error, fetchReview, setReviewData } = useReview();
@@ -299,7 +300,16 @@ const ReviewPage: React.FC = () => {
             <ChatPanel chat={chat} />
           </>
         )}
-        <ComparisonView shortlist={shortlist} />
+        {/* Compare Products Tab */}
+        <div className="compare-toggle-section">
+          <button
+            className={`compare-toggle-btn ${showCompare ? 'active' : ''}`}
+            onClick={() => setShowCompare(!showCompare)}
+          >
+            {showCompare ? '✕ Close Comparison' : '⚖️ Compare Products'}
+          </button>
+        </div>
+        {showCompare && <ComparisonView shortlist={shortlist} />}
       </main>
     </div>
   );
