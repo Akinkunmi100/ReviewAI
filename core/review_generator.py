@@ -256,7 +256,7 @@ Generate JSON with this exact structure:
 {{
 "product_name": "Full product name from sources",
 "specifications_inferred": "Concise summary of key specs found",
-"predicted_rating": "X.X / 5.0 (based on analysis)",
+"predicted_rating": "CALCULATED SCORE / 5.0. Logic: Start at 5.0. Deduct 0.5 for each MAJOR flaw (red flag). Deduct 0.2 for each minor complaint. Example: 4.3 / 5.0",
 "pros": [
     "SPECIFIC strength with measurable claim (e.g., '4500mAh battery lasts 2 days', not 'good battery')",
     "Real advantage mentioned in reviews - cite specific features, numbers, or comparisons",

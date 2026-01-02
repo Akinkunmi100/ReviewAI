@@ -113,6 +113,9 @@ const ReviewPage: React.FC = () => {
     const trimmed = name.trim();
     if (!trimmed) return;
 
+    // Scroll to top immediately
+    window.scrollTo(0, 0);
+
     // Clear previous review and reset state for new search
     setReviewData(null);
     setSessionId(null);
