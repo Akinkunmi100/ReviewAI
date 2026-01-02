@@ -97,46 +97,85 @@ class ComparisonGenerator:
         )
     
     def _determine_winners(self, items: List[ProductComparisonItem]) -> Dict[str, str]:
-        """Determine winner for each comparison category"""
+        """Determine winner for each comparison category (universal - works for any product)"""
         winners = {}
         
-        # Price winner (lowest)
+        if not items:
+            return winners
+        
+        # Price winner (lowest) - UNIVERSAL
         priced_items = [i for i in items if i.price_naira]
         if priced_items:
             winners['Price'] = min(priced_items, key=lambda x: x.price_naira).product_name
         
-        # Rating winner
+        # Rating winner - UNIVERSAL
         rated_items = [i for i in items if i.rating and '/' in i.rating]
         if rated_items:
-            def extract_rating(r):
+            def extract_rating(item):
                 try:
-                    return float(r.rating.split('/')[0].strip())
+                    return float(item.rating.split('/')[0].strip())
                 except:
                     return 0
             winners['Rating'] = max(rated_items, key=extract_rating).product_name
         
-        # Pros count (features)
-        winners['Features'] = max(items, key=lambda x: len(x.pros)).product_name
+        # Features winner (most pros) - UNIVERSAL
+        if items:
+            winners['Features'] = max(items, key=lambda x: len(x.pros)).product_name
+        
+        # Reliability winner (fewest cons) - UNIVERSAL
+        if items:
+            winners['Reliability'] = min(items, key=lambda x: len(x.cons)).product_name
+        
+        # Versatility winner (most use cases in best_for) - UNIVERSAL
+        items_with_usecases = [i for i in items if i.best_for and len(i.best_for) > 0]
+        if items_with_usecases:
+            winners['Versatility'] = max(items_with_usecases, key=lambda x: len(x.best_for)).product_name
         
         return winners
     
     def _determine_best_value(self, items: List[ProductComparisonItem]) -> Optional[str]:
-        """Determine best value for money"""
-        scored_items = []
+        """Determine best value for money with proper 0-10 scoring"""
+        if not items:
+            return None
         
+        # Get price range for normalization
+        priced_items = [i for i in items if i.price_naira and i.price_naira > 0]
+        if not priced_items:
+            return None
+        
+        max_price = max(i.price_naira for i in priced_items)
+        min_price = min(i.price_naira for i in priced_items)
+        price_range = max_price - min_price if max_price > min_price else max_price
+        
+        scored_items = []
         for item in items:
             if item.price_naira and item.rating:
                 try:
+                    # Extract rating (e.g., "4.2 / 5.0" -> 4.2)
                     rating = float(item.rating.split('/')[0].strip())
-                    # Value score = rating / (price / 100000) - higher is better value
-                    value_score = rating / (item.price_naira / 100000)
-                    item.value_score = round(value_score, 2)
+                    
+                    # Normalize rating to 0-1 (rating out of 5)
+                    rating_norm = min(rating / 5.0, 1.0)
+                    
+                    # Normalize price to 0-1 (lower price = higher score)
+                    # Use inverse: (1 - (price - min) / range) gives 1 for cheapest, 0 for most expensive
+                    if price_range > 0:
+                        price_norm = 1.0 - ((item.price_naira - min_price) / price_range)
+                    else:
+                        price_norm = 0.5  # All same price
+                    
+                    # Value Score = weighted combination, scaled to 0-10
+                    # 60% rating importance, 40% price importance
+                    value_score = (0.6 * rating_norm + 0.4 * price_norm) * 10
+                    
+                    # Clamp to 0-10 range
+                    item.value_score = round(max(0, min(10, value_score)), 1)
                     scored_items.append(item)
                 except:
                     continue
         
         if scored_items:
-            return max(scored_items, key=lambda x: x.value_score).product_name
+            return max(scored_items, key=lambda x: x.value_score or 0).product_name
         return None
     
     def _determine_overall_winner(self, winners: Dict[str, str]) -> Optional[str]:
@@ -149,18 +188,58 @@ class ComparisonGenerator:
     
     def _generate_ai_recommendation(self, items: List[ProductComparisonItem], 
                                    winners: Dict[str, str]) -> str:
-        """Generate AI-powered recommendation"""
+        """Generate AI-powered detailed recommendation using LLM"""
         if not items:
             return "Unable to generate recommendation."
         
         overall_winner = self._determine_overall_winner(winners)
         
-        if overall_winner:
-            return f"Based on our analysis, **{overall_winner}** offers the best overall package. " \
-                   f"It wins in {sum(1 for w in winners.values() if w == overall_winner)} out of " \
-                   f"{len(winners)} categories compared."
+        # Build context for LLM
+        products_summary = []
+        for item in items:
+            price_str = f"₦{item.price_naira:,.0f}" if item.price_naira else "N/A"
+            products_summary.append(f"""
+**{item.product_name}**:
+- Price: {price_str}
+- Rating: {item.rating or 'N/A'}
+- Value Score: {item.value_score}/10
+- Pros: {', '.join(item.pros[:3])}
+- Cons: {', '.join(item.cons[:2])}""")
         
-        return "Both products have their strengths. Choose based on your priorities."
+        winners_str = ', '.join([f"{cat}: {winner}" for cat, winner in winners.items()])
+        
+        try:
+            prompt = f"""Based on this product comparison, write a brief 2-3 sentence recommendation:
+
+{chr(10).join(products_summary)}
+
+Category winners: {winners_str}
+Overall winner by category count: {overall_winner or 'Tie'}
+
+Guidelines:
+- Be specific about WHO should buy which product
+- Mention value for money
+- Highlight the key differentiator
+- Keep it under 50 words"""
+
+            response = self.client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": "You are a helpful product comparison advisor. Be concise and actionable."},
+                    {"role": "user", "content": prompt}
+                ],
+                model=self.config.model_name,
+                temperature=0.5,
+                max_tokens=150
+            )
+            
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            # Fallback to simple recommendation
+            if overall_winner:
+                return f"Based on our analysis, **{overall_winner}** offers the best overall package, " \
+                       f"winning in {sum(1 for w in winners.values() if w == overall_winner)} out of " \
+                       f"{len(winners)} categories."
+            return "Both products have their strengths. Choose based on your priorities."
 
 
 class ReviewGenerator:

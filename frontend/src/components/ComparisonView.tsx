@@ -108,96 +108,103 @@ const ComparisonView: React.FC<Props> = ({ shortlist }) => {
 
       {comparison && (
         <div className="comparison-results">
-          <div className="comparison-winners">
-            {comparison.overall_winner && (
-              <p>
-                <strong>Overall winner:</strong> {comparison.overall_winner}
-              </p>
-            )}
-            {(comparison.best_value || comparison.best_budget || comparison.best_premium) && (
-              <p>
-                {comparison.best_value && (
-                  <span>
-                    <strong>Best value:</strong> {comparison.best_value}{" "}
+          {/* Winner Summary Banner */}
+          {comparison.overall_winner && (
+            <div className="winner-banner">
+              <span className="winner-crown">🏆</span>
+              <span className="winner-text">
+                <strong>{comparison.overall_winner}</strong> is the overall winner
+              </span>
+            </div>
+          )}
+
+          {/* Category Winners as Tags */}
+          {comparison.winner_by_category && Object.keys(comparison.winner_by_category).length > 0 && (
+            <div className="category-winners">
+              <span className="category-label">Winners by category:</span>
+              <div className="category-tags">
+                {Object.entries(comparison.winner_by_category).map(([cat, winner]) => (
+                  <span key={cat} className="category-tag">
+                    <span className="cat-name">{cat}</span>
+                    <span className="cat-winner">{winner as string}</span>
                   </span>
-                )}
-                {comparison.best_budget && (
-                  <span>
-                    <strong>Best budget:</strong> {comparison.best_budget}{" "}
-                  </span>
-                )}
-                {comparison.best_premium && (
-                  <span>
-                    <strong>Best premium:</strong> {comparison.best_premium}
-                  </span>
-                )}
-              </p>
-            )}
-            {comparison.winner_by_category && Object.keys(comparison.winner_by_category).length > 0 && (
-              <div className="winner-by-category">
-                <strong>Winners by category:</strong>
-                <ul>
-                  {Object.entries(comparison.winner_by_category).map(([cat, winner]) => (
-                    <li key={cat}>
-                      {cat}: {winner}
-                    </li>
-                  ))}
-                </ul>
+                ))}
               </div>
+            </div>
+          )}
+
+          {/* Quick Awards */}
+          <div className="quick-awards">
+            {comparison.best_value && (
+              <span className="award-badge value">💎 Best Value: {comparison.best_value}</span>
+            )}
+            {comparison.best_budget && (
+              <span className="award-badge budget">💰 Budget Pick: {comparison.best_budget}</span>
+            )}
+            {comparison.best_premium && (
+              <span className="award-badge premium">✨ Premium Choice: {comparison.best_premium}</span>
             )}
           </div>
 
           <div className="comparison-grid">
-            {Array.isArray(comparison.products) ? comparison.products.map((p) => (
-              <div key={p.product_name} className="product-compare-card">
-                <div className="product-compare-header">
-                  <h4>{p.product_name}</h4>
-                  {p.rating && (
-                    <span className="product-rating">⭐ {p.rating}</span>
-                  )}
-                </div>
+            {Array.isArray(comparison.products) ? comparison.products.map((p) => {
+              const isWinner = p.product_name === comparison.overall_winner;
+              const valueScore = p.value_score ?? 0;
+              const scoreClass = valueScore >= 7 ? 'high' : valueScore >= 5 ? 'medium' : 'low';
 
-                <div className="product-compare-stats">
-                  <div className="stat-item">
-                    <span className="stat-label">Price</span>
-                    <span className="stat-value price">
-                      {typeof p.price_naira === 'number' && Number.isFinite(p.price_naira) ? `₦${p.price_naira.toLocaleString()}` : "N/A"}
-                    </span>
+              return (
+                <div key={p.product_name} className={`product-compare-card ${isWinner ? 'winner' : ''}`}>
+                  {isWinner && <div className="winner-ribbon">👑 Winner</div>}
+
+                  <div className="product-compare-header">
+                    <h4>{p.product_name}</h4>
+                    {p.rating && (
+                      <span className="product-rating">⭐ {p.rating}</span>
+                    )}
                   </div>
-                  {p.value_score !== undefined && (
+
+                  <div className="product-compare-stats">
                     <div className="stat-item">
-                      <span className="stat-label">Value Score</span>
-                      <span className="stat-value score">{p.value_score.toFixed(1)}/10</span>
+                      <span className="stat-label">Price</span>
+                      <span className="stat-value price">
+                        {typeof p.price_naira === 'number' && Number.isFinite(p.price_naira) ? `₦${p.price_naira.toLocaleString()}` : "N/A"}
+                      </span>
                     </div>
-                  )}
-                </div>
+                    {p.value_score !== undefined && (
+                      <div className="stat-item">
+                        <span className="stat-label">Value Score</span>
+                        <span className={`stat-value score ${scoreClass}`}>{p.value_score.toFixed(1)}/10</span>
+                      </div>
+                    )}
+                  </div>
 
-                <div className="product-pros-cons">
-                  <div className="pros-section">
-                    <div className="section-title">
-                      <ThumbsUp size={14} />
-                      <span>Pros</span>
+                  <div className="product-pros-cons">
+                    <div className="pros-section">
+                      <div className="section-title">
+                        <ThumbsUp size={14} />
+                        <span>Pros</span>
+                      </div>
+                      <ul>
+                        {p.pros.slice(0, 3).map((pro, idx) => (
+                          <li key={idx}>{pro}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul>
-                      {p.pros.slice(0, 3).map((pro, idx) => (
-                        <li key={idx}>{pro}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="cons-section">
-                    <div className="section-title">
-                      <ThumbsDown size={14} />
-                      <span>Cons</span>
+                    <div className="cons-section">
+                      <div className="section-title">
+                        <ThumbsDown size={14} />
+                        <span>Cons</span>
+                      </div>
+                      <ul>
+                        {p.cons.slice(0, 3).map((con, idx) => (
+                          <li key={idx}>{con}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul>
-                      {p.cons.slice(0, 3).map((con, idx) => (
-                        <li key={idx}>{con}</li>
-                      ))}
-                    </ul>
                   </div>
                 </div>
-              </div>
-            )) : null}
+              );
+            }) : null}
           </div>
 
           {comparison.ai_recommendation && (

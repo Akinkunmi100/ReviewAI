@@ -8797,3 +8797,173 @@ img {
 :root[data-theme="dark"] .compare-toggle-btn:hover {
   background: var(--color-primary-soft);
 }
+
+/* ========================================
+   ENHANCED COMPARISON RESULTS
+   ======================================== */
+
+.winner-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.winner-crown {
+  font-size: 1.5rem;
+}
+
+.winner-text {
+  font-size: 1.1rem;
+  color: #92400e;
+}
+
+.category-winners {
+  margin-bottom: var(--space-lg);
+}
+
+.category-label {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-right: var(--space-sm);
+}
+
+.category-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.cat-name {
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cat-winner {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.75rem;
+  color: var(--color-text-main);
+}
+
+.quick-awards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.award-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.award-badge.value {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e40af;
+  border: 1px solid #60a5fa;
+}
+
+.award-badge.budget {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+  border: 1px solid #34d399;
+}
+
+.award-badge.premium {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  border: 1px solid #fbbf24;
+}
+
+/* Winner Card Styling */
+.product-compare-card.winner {
+  border: 2px solid #f59e0b;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+  position: relative;
+}
+
+.winner-ribbon {
+  position: absolute;
+  top: -1px;
+  right: var(--space-md);
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: white;
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+/* Color-coded Value Scores */
+.stat-value.score.high {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.stat-value.score.medium {
+  color: #d97706;
+  background: rgba(245, 158, 11, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.stat-value.score.low {
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* Dark mode adjustments */
+:root[data-theme="dark"] .winner-banner {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(251, 191, 36, 0.2) 100%);
+  border-color: #f59e0b;
+}
+
+:root[data-theme="dark"] .winner-text {
+  color: #fbbf24;
+}
+
+:root[data-theme="dark"] .category-tag {
+  background: var(--color-surface-elevated);
+}
+
+:root[data-theme="dark"] .award-badge.value {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+}
+
+:root[data-theme="dark"] .award-badge.budget {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+}
+
+:root[data-theme="dark"] .award-badge.premium {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+}
