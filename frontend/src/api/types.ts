@@ -163,7 +163,7 @@ export interface VoxPopuliReport {
 
 export interface SmartSwapOption {
   product_name: string;
-  price: number;
+  price: string | number;  // Can be formatted string (₦450,000) or number
   condition: string;
   performance_diff: string;
   camera_diff: string;
