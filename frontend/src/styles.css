@@ -9244,3 +9244,20 @@ img {
   transition: width 0.5s ease;
 }
 
+
+
+/* Comparison Help Text */
+.compare-help-text {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary);
+}
+
+.compare-help-text strong {
+  color: var(--color-text);
+}
+

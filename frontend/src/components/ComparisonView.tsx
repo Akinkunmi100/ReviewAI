@@ -83,6 +83,10 @@ const ComparisonView: React.FC<Props> = ({ shortlist, prefillNames }) => {
               Compare <ArrowRight size={16} />
             </button>
           </div>
+          <p className="compare-help-text">
+            💡 <strong>How to compare:</strong> Type 2-3 product names separated by commas, then click Compare.
+            Example: "iPhone 15, Samsung S24" or "Nike Air Max, Adidas Ultraboost, Puma RS-X"
+          </p>
         </div>
 
         {shortlist.length >= 2 && (
