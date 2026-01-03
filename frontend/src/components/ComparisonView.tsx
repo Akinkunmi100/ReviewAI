@@ -43,6 +43,7 @@ const ComparisonView: React.FC<Props> = ({ shortlist, prefillNames }) => {
     try {
       const data = await apiCompare(names);
       setComparison(data);
+      setNamesInput(""); // Clear input on success
     } catch (e: any) {
       setError(e.message ?? "Comparison failed");
     } finally {
