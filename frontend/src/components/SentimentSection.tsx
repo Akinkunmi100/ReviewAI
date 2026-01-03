@@ -41,10 +41,13 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
           {aspects.map((row) => {
             const width = Math.round(((row.avg_sentiment + 1) / 2) * 100);
             const color = sentimentColor(row.avg_sentiment);
+            const pct = Math.round(row.avg_sentiment * 100);
+            const indicator = pct >= 10 ? "✅" : pct <= -10 ? "❌" : "➖";
+            const label = pct >= 10 ? "Positive" : pct <= -10 ? "Negative" : "Neutral";
             return (
               <div key={row.aspect} className="aspect-row">
                 <div className="aspect-label">
-                  <strong>{row.aspect}</strong> <span>({row.mentions} mentions)</span>
+                  <strong>{row.aspect}</strong>
                 </div>
                 <div className="aspect-bar-bg">
                   <div
@@ -52,7 +55,9 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
                     style={{ width: `${width}%`, backgroundColor: color }}
                   />
                 </div>
-                <div className="aspect-score">{Math.round(row.avg_sentiment * 100)}%</div>
+                <div className="aspect-score">
+                  {indicator} {label} ({pct >= 0 ? "+" : ""}{pct}%)
+                </div>
               </div>
             );
           })}
