@@ -5,23 +5,32 @@ import { Scale, Plus, AlertCircle, ThumbsUp, ThumbsDown, Sparkles, ArrowRight } 
 
 interface Props {
   shortlist: { name: string }[];
+  prefillNames?: string[];
 }
 
-const ComparisonView: React.FC<Props> = ({ shortlist }) => {
+const ComparisonView: React.FC<Props> = ({ shortlist, prefillNames }) => {
   const [namesInput, setNamesInput] = useState("");
   const [comparison, setComparison] = useState<ProductComparison | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleCompare(source: "shortlist" | "manual") {
+  React.useEffect(() => {
+    if (prefillNames && prefillNames.length >= 2) {
+      setNamesInput(prefillNames.join(", "));
+      handleCompare("manual", prefillNames);
+    }
+  }, [prefillNames]);
+
+  async function handleCompare(source: "shortlist" | "manual", explicitNames?: string[]) {
     const names: string[] =
-      source === "shortlist"
+      explicitNames ||
+      (source === "shortlist"
         ? shortlist.map((s) => s.name).slice(0, 3)
         : namesInput
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean)
-          .slice(0, 3);
+          .slice(0, 3));
 
     if (names.length < 2) {
       setError("Need at least 2 products to compare");

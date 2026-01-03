@@ -44,6 +44,7 @@ const ReviewPage: React.FC = () => {
   const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>([]);
   const [uiMessage, setUiMessage] = useState<string | null>(null);
   const [showCompare, setShowCompare] = useState(false);
+  const [comparisonProducts, setComparisonProducts] = useState<string[]>([]);
 
   const { token } = useAuth();
   const { review, loading, error, fetchReview, setReviewData } = useReview();
@@ -117,11 +118,45 @@ const ReviewPage: React.FC = () => {
     // Scroll to top immediately
     window.scrollTo(0, 0);
 
+    // Intelligent Comparison Detection
+    // Regex for: "compare A vs B", "A vs B", "A and B", "A, B"
+    const compareRegex = /(?:^compare\s+)?(.+?)\s+(?:vs\.?|versus|and|,)\s+(.+)/i;
+    const match = trimmed.match(compareRegex);
+
+    if (match) {
+      // Likely a comparison intent
+      // Check if it's "compare X" where X might be a single product name vs implicit
+      // But for now assume explicit comparison if separator exists
+
+      // Extract potential names
+      // If query is "compare A and B and C", simple regex might be tricky
+      // Let's use a simpler splitter strategy if "compare" keyword or "vs" is present
+
+      const isExplicitCompare = /^compare\s+/i.test(trimmed) || /\s+vs\.?\s+/i.test(trimmed);
+      const hasSeparator = /\s+(?:and|,)\s+/i.test(trimmed);
+
+      if (isExplicitCompare || (hasSeparator && trimmed.split(/\s+(?:and|,)\s+/).length >= 2)) {
+        const cleanName = trimmed.replace(/^compare\s+/i, "");
+        const products = cleanName.split(/\s+(?:vs\.?|versus|and|,)\s+/i)
+          .map(p => p.trim())
+          .filter(p => p.length > 0);
+
+        if (products.length >= 2) {
+          // Switch to comparison mode
+          setComparisonProducts(products.slice(0, 3)); // Max 3
+          setShowCompare(true);
+          return;
+        }
+      }
+    }
+
     // Clear previous review and reset state for new search
     setReviewData(null);
     setSessionId(null);
     setConversationHistory([]);
     setProductName(trimmed);
+    setComparisonProducts([]); // Reset auto-comparison
+    setShowCompare(false); // Switch back to review mode if not comparison
 
     const result = await fetchReview(trimmed, dataMode, userId ?? undefined);
     if (result) {
@@ -326,7 +361,7 @@ const ReviewPage: React.FC = () => {
         )}
 
         {/* Compare Mode Content */}
-        {showCompare && <ComparisonView shortlist={shortlist} />}
+        {showCompare && <ComparisonView shortlist={shortlist} prefillNames={comparisonProducts} />}
       </main>
     </div>
   );

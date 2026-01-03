@@ -31,8 +31,10 @@ class SentimentAnalyzer:
             'frustrating', 'unreliable', 'cheaply', 'horrible'
         }
         
-        # Aspect keywords
+        # Aspect keywords - UNIVERSAL with durability focus
         self.aspect_keywords = {
+            'durability': ['durable', 'lasting', 'repair', 'break', 'lifespan', 'warranty', 
+                           'years', 'sturdy', 'robust', 'fragile', 'crack', 'damage'],
             'quality': ['quality', 'build', 'durability', 'material', 'construction'],
             'performance': ['performance', 'speed', 'fast', 'slow', 'responsive'],
             'value': ['price', 'value', 'worth', 'expensive', 'cheap', 'cost'],

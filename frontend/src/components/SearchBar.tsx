@@ -26,6 +26,29 @@ const SearchBar: React.FC<Props> = ({ onAnalyze, dataMode, setDataMode }) => {
     return null;
   };
 
+  // Diverse placeholders to show universal capability
+  const PLACEHOLDERS = [
+    "Iphone 15, Samsung S23 Ultra",  // Comparison example
+    "Nike Air Max 90",
+    "Sony WH-1000XM5",
+    "Dyson V15 Detect",
+    "MacBook Pro M3",
+    "Levi's 501 Jeans",
+    "PlayStation 5",
+    "LG C3 OLED TV",
+    "Canon EOS R5",
+    "Hp and Acer laptop bag" // Comparison example
+  ];
+
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDERS.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -46,7 +69,7 @@ const SearchBar: React.FC<Props> = ({ onAnalyze, dataMode, setDataMode }) => {
         <Search size={20} style={{ color: 'var(--color-text-subtle)', flexShrink: 0 }} />
         <input
           value={value}
-          placeholder="Search for any product..."
+          placeholder={`Search or Compare (e.g., ${PLACEHOLDERS[placeholderIndex]})`}
           onChange={(e) => {
             setValue(e.target.value);
             if (error) setError(null); // Clear error on input change

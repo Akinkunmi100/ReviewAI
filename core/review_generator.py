@@ -97,11 +97,17 @@ class ComparisonGenerator:
         )
     
     def _determine_winners(self, items: List[ProductComparisonItem]) -> Dict[str, str]:
-        """Determine winner for each comparison category (universal - works for any product)"""
+        """Determine winner for each comparison category (universal + gadget-specific)"""
+        import re
+        from core.gadget_detector import detect_gadget_category
+        
         winners = {}
         
         if not items:
             return winners
+        
+        # Detect category from first product
+        category = detect_gadget_category(items[0].product_name) if items else None
         
         # Price winner (lowest) - UNIVERSAL
         priced_items = [i for i in items if i.price_naira]
@@ -125,6 +131,83 @@ class ComparisonGenerator:
         # Reliability winner (fewest cons) - UNIVERSAL
         if items:
             winners['Reliability'] = min(items, key=lambda x: len(x.cons)).product_name
+        
+        # GADGET-SPECIFIC CATEGORIES
+        if category in ['phone', 'laptop', 'tablet']:
+            # Battery extraction (mAh)
+            def extract_battery(item):
+                text = ' '.join(item.pros).lower()
+                match = re.search(r'(\d{4,5})\s*mah', text)
+                return int(match.group(1)) if match else 0
+            
+            battery_items = [(i, extract_battery(i)) for i in items]
+            battery_items = [(i, b) for i, b in battery_items if b > 0]
+            if battery_items:
+                winners['Battery'] = max(battery_items, key=lambda x: x[1])[0].product_name
+        
+        if category == 'phone':
+            # Camera extraction (MP)
+            def extract_camera(item):
+                text = ' '.join(item.pros).lower()
+                match = re.search(r'(\d{2,3})\s*mp', text)
+                return int(match.group(1)) if match else 0
+            
+            camera_items = [(i, extract_camera(i)) for i in items]
+            camera_items = [(i, c) for i, c in camera_items if c > 0]
+            if camera_items:
+                winners['Camera'] = max(camera_items, key=lambda x: x[1])[0].product_name
+            
+            # RAM extraction (GB)
+            def extract_ram(item):
+                text = ' '.join(item.pros).lower()
+                match = re.search(r'(\d{1,2})\s*gb\s*ram', text)
+                return int(match.group(1)) if match else 0
+            
+            ram_items = [(i, extract_ram(i)) for i in items]
+            ram_items = [(i, r) for i, r in ram_items if r > 0]
+            if ram_items:
+                winners['RAM'] = max(ram_items, key=lambda x: x[1])[0].product_name
+        
+        if category == 'laptop':
+            # Processor core extraction
+            def extract_cores(item):
+                text = ' '.join(item.pros).lower()
+                match = re.search(r'(\d{1,2})\s*core', text)
+                if not match:
+                    match = re.search(r'i(\d)\s', text)  # i5, i7, i9
+                return int(match.group(1)) if match else 0
+            
+            core_items = [(i, extract_cores(i)) for i in items]
+            core_items = [(i, c) for i, c in core_items if c > 0]
+            if core_items:
+                winners['Processor'] = max(core_items, key=lambda x: x[1])[0].product_name
+            
+            # RAM extraction (GB)
+            def extract_ram(item):
+                text = ' '.join(item.pros).lower()
+                match = re.search(r'(\d{1,2})\s*gb\s*(?:ram|ddr)', text)
+                return int(match.group(1)) if match else 0
+            
+            ram_items = [(i, extract_ram(i)) for i in items]
+            ram_items = [(i, r) for i, r in ram_items if r > 0]
+            if ram_items:
+                winners['RAM'] = max(ram_items, key=lambda x: x[1])[0].product_name
+            
+            # Storage extraction (GB/TB)
+            def extract_storage(item):
+                text = ' '.join(item.pros).lower()
+                match = re.search(r'(\d+)\s*(?:gb|tb)\s*(?:ssd|nvme|storage)', text)
+                if match:
+                    val = int(match.group(1))
+                    if 'tb' in text:
+                        val *= 1000
+                    return val
+                return 0
+            
+            storage_items = [(i, extract_storage(i)) for i in items]
+            storage_items = [(i, s) for i, s in storage_items if s > 0]
+            if storage_items:
+                winners['Storage'] = max(storage_items, key=lambda x: x[1])[0].product_name
         
         # Versatility winner (most use cases in best_for) - UNIVERSAL
         items_with_usecases = [i for i in items if i.best_for and len(i.best_for) > 0]
@@ -327,23 +410,31 @@ Output must be valid JSON matching the exact schema."""
                                    scraped_content: List[ScrapedContent]) -> str:
         sources = [content.url for content in scraped_content]
         
+        # Get category-specific instructions
+        from core.gadget_detector import get_category_prompt_instructions
+        category_instructions = get_category_prompt_instructions(product_name)
+        
         return f"""Based on this current web information (gathered on {datetime.now(timezone.utc).strftime('%B %d, %Y')}), create a product review:
 
 {context}
 
+{category_instructions}
+
 Generate JSON with this exact structure:
 {{
 "product_name": "Full product name from sources",
-"specifications_inferred": "Concise summary of key specs found",
+"specifications_inferred": "Concise summary of key specs found - INCLUDE critical specs for this product category",
 "predicted_rating": "CALCULATED SCORE / 5.0. Logic: Start at 5.0. Deduct 0.5 for each MAJOR flaw (red flag). Deduct 0.2 for each minor complaint. Example: 4.3 / 5.0",
 "pros": [
-    "SPECIFIC strength with measurable claim (e.g., '4500mAh battery lasts 2 days', not 'good battery')",
+    "SPECIFIC strength with measurable claim (e.g., '4500mAh battery lasts 2 days', '12th Gen i7 handles multitasking')",
+    "Focus on CRITICAL FEATURES for this product type as specified above",
     "Real advantage mentioned in reviews - cite specific features, numbers, or comparisons",
     "Maximum 5 pros - only include genuinely notable strengths"
 ],
 "cons": [
-    "SPECIFIC weakness with detail (e.g., 'No headphone jack, requires adapter', not 'missing features')",
-    "Real pain point from user reviews - heating issues, software bugs, build quality concerns",
+    "SPECIFIC weakness with detail (e.g., 'Battery only lasts 4 hours', 'Heating issues during gaming')",
+    "Focus on CRITICAL FEATURES for this product type as specified above",
+    "Include durability concerns if mentioned (repairs, breakage, lifespan)",
     "Maximum 5 cons - only include genuine problems users report"
 ],
 "verdict": "Comprehensive concluding paragraph",
