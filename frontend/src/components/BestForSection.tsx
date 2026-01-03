@@ -71,7 +71,7 @@ const BestForSection: React.FC<{ review: EnhancedProductReview }> = ({ review })
                           style={{ width: `${Math.min(score * 10, 100)}%` }}
                         />
                       </div>
-                      <span className="score-value">{Number(score).toFixed(1)}/10</span>
+                      <span className="score-value">{(score * 10).toFixed(1)}/10</span>
                     </div>
                   )}
                 </div>

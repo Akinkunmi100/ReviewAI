@@ -27,7 +27,8 @@ const ComparisonView: React.FC<Props> = ({ shortlist, prefillNames }) => {
       (source === "shortlist"
         ? shortlist.map((s) => s.name).slice(0, 3)
         : namesInput
-          .split(/[,&]|\s+(?:and|vs\.?|versus)\s+/i)
+          .replace(/^(?:compare|comparison|versus)\s+/i, "") // Remove leading command words
+          .split(/[,&]|\s+(?:and|vs\.?|versus|with)\s+/i)
           .map((s) => s.trim())
           .filter(Boolean)
           .slice(0, 3));
