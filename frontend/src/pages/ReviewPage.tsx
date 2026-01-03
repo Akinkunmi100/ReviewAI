@@ -298,7 +298,7 @@ const ReviewPage: React.FC = () => {
         {loading && !review && (
           <AnalysisProgress isLoading={loading} productName={productName || "product"} />
         )}
-        {review && displayReview && (
+        {!showCompare && review && displayReview && (
           <>
             <DecisionCard
               review={displayReview}
