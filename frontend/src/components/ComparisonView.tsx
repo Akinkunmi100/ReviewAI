@@ -180,14 +180,16 @@ const ComparisonView: React.FC<Props> = ({ shortlist, prefillNames }) => {
 
                   <div className="product-compare-stats">
                     <div className="stat-item">
-                      <span className="stat-label">Price</span>
+                      <span className="stat-label">Price <small className="price-source-tag">(Est. Market)</small></span>
                       <span className="stat-value price">
                         {typeof p.price_naira === 'number' && Number.isFinite(p.price_naira) ? `₦${p.price_naira.toLocaleString()}` : "N/A"}
                       </span>
                     </div>
                     {p.value_score !== undefined && (
                       <div className="stat-item">
-                        <span className="stat-label">Value Score</span>
+                        <span className="stat-label" title="Score based on Price vs. Performance balance">
+                          Value Score <span className="info-icon">ⓘ</span>
+                        </span>
                         <span className={`stat-value score ${scoreClass}`}>{p.value_score.toFixed(1)}/10</span>
                       </div>
                     )}

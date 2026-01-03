@@ -9261,3 +9261,36 @@ img {
   color: var(--color-text);
 }
 
+
+/* Transparency Labels */
+.price-source-tag {
+  font-size: 0.75rem;
+  color: var(--color-text-subtle);
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  margin-left: 6px;
+  cursor: help;
+  vertical-align: middle;
+}
+
+.stat-label[title] {
+  cursor: help;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-text-subtle);
+}
+

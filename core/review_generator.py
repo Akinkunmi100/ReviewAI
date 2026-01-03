@@ -426,16 +426,16 @@ Generate JSON with this exact structure:
 "specifications_inferred": "Concise summary of key specs found - INCLUDE critical specs for this product category",
 "predicted_rating": "CALCULATED SCORE / 5.0. Logic: Start at 5.0. Deduct 0.5 for each MAJOR flaw (red flag). Deduct 0.2 for each minor complaint. Example: 4.3 / 5.0",
 "pros": [
-    "SPECIFIC strength with measurable claim (e.g., '4500mAh battery lasts 2 days', '12th Gen i7 handles multitasking')",
-    "Focus on CRITICAL FEATURES for this product type as specified above",
-    "Real advantage mentioned in reviews - cite specific features, numbers, or comparisons",
-    "Maximum 5 pros - only include genuinely notable strengths"
+    "STRICTLY SPECIFIC strength with numbers/specs (e.g., '5000mAh battery', 'Snapdragon 8 Gen 3', '2000 nits brightness')",
+    "NO GENERIC PHRASES like 'Good performance' or 'Nice camera' -> Use 'A17 Pro chip' or '48MP Main Sensor'",
+    "Cite specific benchmark results or real-world battery hours if available",
+    "Maximum 5 highly specific pros"
 ],
 "cons": [
-    "SPECIFIC weakness with detail (e.g., 'Battery only lasts 4 hours', 'Heating issues during gaming')",
-    "Focus on CRITICAL FEATURES for this product type as specified above",
-    "Include durability concerns if mentioned (repairs, breakage, lifespan)",
-    "Maximum 5 cons - only include genuine problems users report"
+    "STRICTLY SPECIFIC weakness (e.g., 'Slow 25W charging', 'No telephoto lens', 'Bloatware pre-installed')",
+    "NO GENERIC PHRASES like 'Battery could be better' -> Use 'Only 4 hours screen-on time'",
+    "Include specific durability or QA issues (e.g., 'Overheating at 45°C', 'Screen burn-in reports')",
+    "Maximum 5 specific cons"
 ],
 "verdict": "Comprehensive concluding paragraph",
 "price_info": "CRITICAL: Use CURRENT Nigerian market price in Naira (₦). For older products, use depreciated resale value, NOT launch price. Prioritize prices from Jumia, Konga, or Slot Nigeria. Format: ₦XXX,XXX - ₦XXX,XXX",
