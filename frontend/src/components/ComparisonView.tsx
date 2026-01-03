@@ -27,7 +27,7 @@ const ComparisonView: React.FC<Props> = ({ shortlist, prefillNames }) => {
       (source === "shortlist"
         ? shortlist.map((s) => s.name).slice(0, 3)
         : namesInput
-          .split(",")
+          .split(/[,&]|\s+(?:and|vs\.?|versus)\s+/i)
           .map((s) => s.trim())
           .filter(Boolean)
           .slice(0, 3));
@@ -84,8 +84,8 @@ const ComparisonView: React.FC<Props> = ({ shortlist, prefillNames }) => {
             </button>
           </div>
           <p className="compare-help-text">
-            💡 <strong>How to compare:</strong> Type 2-3 product names separated by commas, then click Compare.
-            Example: "iPhone 15, Samsung S24" or "Nike Air Max, Adidas Ultraboost, Puma RS-X"
+            💡 <strong>How to compare:</strong> Type 2-3 product names separated by <strong>commas</strong>, <strong>"and"</strong>, or <strong>"vs"</strong>.
+            Examples: "iPhone 14 and iPhone 15" • "MacBook vs Dell XPS" • "Nike, Adidas, Puma"
           </p>
         </div>
 
