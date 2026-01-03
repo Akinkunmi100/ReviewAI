@@ -43,24 +43,30 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
             const color = sentimentColor(row.avg_sentiment);
             const pct = Math.round(row.avg_sentiment * 100);
 
-            // Human-friendly descriptions
+            // Human-friendly descriptions with styled badges
+            let emoji: string;
             let description: string;
-            let cssClass: string;
+            let badgeClass: string;
             if (pct >= 50) {
-              description = "👍 Highly praised by users";
-              cssClass = "positive";
+              emoji = "👍";
+              description = "Highly praised";
+              badgeClass = "badge-excellent";
             } else if (pct >= 10) {
-              description = "👍 Generally liked";
-              cssClass = "positive";
+              emoji = "👍";
+              description = "Generally liked";
+              badgeClass = "badge-good";
             } else if (pct >= -10) {
-              description = "🤔 Mixed opinions";
-              cssClass = "neutral";
+              emoji = "🤔";
+              description = "Mixed reviews";
+              badgeClass = "badge-neutral";
             } else if (pct >= -50) {
-              description = "⚠️ Some concerns raised";
-              cssClass = "negative";
+              emoji = "⚠️";
+              description = "Some concerns";
+              badgeClass = "badge-warning";
             } else {
-              description = "⛔ Frequently criticized";
-              cssClass = "negative";
+              emoji = "⛔";
+              description = "Often criticized";
+              badgeClass = "badge-critical";
             }
 
             return (
@@ -74,8 +80,11 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
                     style={{ width: `${width}%`, backgroundColor: color }}
                   />
                 </div>
-                <div className={`aspect-score ${cssClass}`}>
-                  {description}
+                <div className="aspect-indicator">
+                  <span className={`sentiment-badge ${badgeClass}`}>
+                    <span className="badge-emoji">{emoji}</span>
+                    <span className="badge-text">{description}</span>
+                  </span>
                 </div>
               </div>
             );

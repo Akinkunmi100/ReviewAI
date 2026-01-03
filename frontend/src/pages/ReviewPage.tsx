@@ -259,7 +259,10 @@ const ReviewPage: React.FC = () => {
         {/* Compare button in sidebar */}
         <button
           className={`sidebar-compare-btn ${showCompare ? 'active' : ''}`}
-          onClick={() => setShowCompare(!showCompare)}
+          onClick={() => {
+            setShowCompare(!showCompare);
+            if (!showCompare) window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
         >
           ⚖️ {showCompare ? 'Hide Comparison' : 'Compare Products'}
         </button>
@@ -281,7 +284,10 @@ const ReviewPage: React.FC = () => {
           </button>
           <button
             className={`mode-tab ${showCompare ? 'active' : ''}`}
-            onClick={() => setShowCompare(true)}
+            onClick={() => {
+              setShowCompare(true);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           >
             ⚖️ Compare
           </button>

@@ -9073,3 +9073,73 @@ img {
 :root[data-theme='dark'] .aspect-score.negative { color: #f87171; }
 :root[data-theme='dark'] .aspect-score.neutral { color: #9ca3af; }
 
+
+
+/* ========================================
+   SENTIMENT BADGE INDICATORS
+   ======================================== */
+
+.aspect-indicator {
+  min-width: 160px;
+  text-align: right;
+}
+
+.sentiment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.badge-emoji {
+  font-size: 1rem;
+}
+
+.badge-text {
+  white-space: nowrap;
+}
+
+/* Excellent - Deep Green */
+.sentiment-badge.badge-excellent {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Good - Light Green */
+.sentiment-badge.badge-good {
+  background: linear-gradient(135deg, #22c55e, #4ade80);
+  color: white;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+/* Neutral - Gray */
+.sentiment-badge.badge-neutral {
+  background: linear-gradient(135deg, #6b7280, #9ca3af);
+  color: white;
+  box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+}
+
+/* Warning - Orange */
+.sentiment-badge.badge-warning {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #1f2937;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+/* Critical - Red */
+.sentiment-badge.badge-critical {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Dark mode adjustments */
+:root[data-theme='dark'] .sentiment-badge {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
