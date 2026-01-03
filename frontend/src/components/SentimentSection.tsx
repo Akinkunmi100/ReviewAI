@@ -19,19 +19,61 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
     <section className="section">
       <h3>Sentiment</h3>
       {s && (
-        <div className="sentiment-summary">
-          <p>
-            <strong>Overall:</strong> {s.overall_sentiment}
-          </p>
-          <p>
-            <strong>Compound score:</strong> {(typeof s.compound_score === 'number' ? s.compound_score.toFixed(2) : 'N/A')}
-          </p>
-          <p>
-            <strong>Confidence:</strong> {(typeof s.sentiment_confidence === 'number' ? (s.sentiment_confidence * 100).toFixed(0) + '%' : 'N/A')}
-          </p>
-          <p>
-            <strong>Tone:</strong> {s.emotional_tone}
-          </p>
+        <div className="sentiment-summary-cards">
+          {/* Overall Verdict */}
+          <div className={`sentiment-card ${s.overall_sentiment?.toLowerCase() || 'neutral'}`}>
+            <div className="sentiment-card-icon">
+              {s.overall_sentiment === 'Positive' ? '😊' : s.overall_sentiment === 'Negative' ? '😟' : '😐'}
+            </div>
+            <div className="sentiment-card-content">
+              <span className="sentiment-card-label">Overall Verdict</span>
+              <span className="sentiment-card-value">{s.overall_sentiment || 'Mixed'}</span>
+              <span className="sentiment-card-desc">
+                {s.overall_sentiment === 'Positive'
+                  ? 'Reviewers are generally happy with this product'
+                  : s.overall_sentiment === 'Negative'
+                    ? 'Reviewers have significant concerns about this product'
+                    : 'Reviews show a mix of positive and negative opinions'}
+              </span>
+            </div>
+          </div>
+
+          {/* Emotional Tone */}
+          <div className="sentiment-card tone">
+            <div className="sentiment-card-icon">🎭</div>
+            <div className="sentiment-card-content">
+              <span className="sentiment-card-label">Reviewer Mood</span>
+              <span className="sentiment-card-value">{s.emotional_tone || 'Balanced'}</span>
+              <span className="sentiment-card-desc">
+                {s.emotional_tone?.includes('Enthusiastic') || s.emotional_tone?.includes('Satisfied')
+                  ? 'People who bought this are happy with their purchase'
+                  : s.emotional_tone?.includes('Disappointed') || s.emotional_tone?.includes('Frustrated')
+                    ? 'Many buyers express regret or frustration'
+                    : 'Buyers have balanced expectations'}
+              </span>
+            </div>
+          </div>
+
+          {/* Confidence */}
+          <div className="sentiment-card confidence">
+            <div className="sentiment-card-icon">📊</div>
+            <div className="sentiment-card-content">
+              <span className="sentiment-card-label">Analysis Confidence</span>
+              <div className="confidence-bar">
+                <div
+                  className="confidence-fill"
+                  style={{ width: `${Math.round((s.sentiment_confidence || 0.5) * 100)}%` }}
+                />
+              </div>
+              <span className="sentiment-card-desc">
+                Based on {s.sentiment_confidence && s.sentiment_confidence > 0.7
+                  ? 'many consistent reviews'
+                  : s.sentiment_confidence && s.sentiment_confidence > 0.4
+                    ? 'a moderate number of reviews'
+                    : 'limited review data'}
+              </span>
+            </div>
+          </div>
         </div>
       )}
 

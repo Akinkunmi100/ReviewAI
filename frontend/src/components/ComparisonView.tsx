@@ -72,7 +72,7 @@ const ComparisonView: React.FC<Props> = ({ shortlist, prefillNames }) => {
               type="text"
               value={namesInput}
               onChange={(e) => setNamesInput(e.target.value)}
-              placeholder="e.g., iPhone 15, Samsung Galaxy S24, Google Pixel 8"
+              placeholder="e.g., MacBook Pro M3, Dell XPS 15, HP Spectre"
               className="compare-input"
             />
             <button
