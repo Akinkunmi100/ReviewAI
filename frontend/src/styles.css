@@ -9046,3 +9046,30 @@ img {
   background: var(--color-primary);
   color: white;
 }
+/* Sentiment Indicator Styling */
+.aspect-score {
+  font-family: var(--font-number);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 140px;
+}
+
+.aspect-score.positive {
+  color: #059669; /* emerald-600 */
+}
+
+.aspect-score.negative {
+  color: #dc2626; /* red-600 */
+}
+
+.aspect-score.neutral {
+  color: #4b5563; /* gray-600 */
+}
+
+/* Dark mode overrides */
+:root[data-theme='dark'] .aspect-score.positive { color: #34d399; }
+:root[data-theme='dark'] .aspect-score.negative { color: #f87171; }
+:root[data-theme='dark'] .aspect-score.neutral { color: #9ca3af; }
+

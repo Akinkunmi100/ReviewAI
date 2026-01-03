@@ -55,7 +55,7 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
                     style={{ width: `${width}%`, backgroundColor: color }}
                   />
                 </div>
-                <div className="aspect-score">
+                <div className={`aspect-score ${pct >= 10 ? 'positive' : pct <= -10 ? 'negative' : 'neutral'}`}>
                   {indicator} {label} ({pct >= 0 ? "+" : ""}{pct}%)
                 </div>
               </div>
