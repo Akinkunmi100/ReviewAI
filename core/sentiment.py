@@ -111,13 +111,22 @@ class SentimentAnalyzer:
         full_text += review.verdict
         return full_text
 
-    def summarize_aspect_sentiment(self, review: ProductReview) -> List[Dict[str, Any]]:
-        """Summarize sentiment per aspect (quality, performance, value, etc.)."""
+    def summarize_aspect_sentiment(self, review: ProductReview, product_name: str = None) -> List[Dict[str, Any]]:
+        """Summarize sentiment per aspect - uses gadget-specific aspects when applicable."""
+        from core.gadget_detector import get_category_features, detect_gadget_category
+        
         text = self._build_full_text(review)
         sentences = [s.strip() for s in re.split(r"[.!?]", text) if s.strip()]
         aspect_summaries: List[Dict[str, Any]] = []
+        
+        # Get category-specific keywords if product name provided
+        if product_name:
+            category = detect_gadget_category(product_name)
+            aspect_keywords = get_category_features(category)
+        else:
+            aspect_keywords = self.aspect_keywords
 
-        for aspect, keywords in self.aspect_keywords.items():
+        for aspect, keywords in aspect_keywords.items():
             aspect_sentiments = []
             mentions = 0
             for sent in sentences:

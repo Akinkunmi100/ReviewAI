@@ -267,7 +267,7 @@ class EnhancedProductReviewService(ProductReviewService):
         logger.info("Analyzing sentiment...")
         sentiment = self.sentiment_analyzer.analyze_review(base_review)
         component_sentiments = self.sentiment_analyzer.analyze_text_components(base_review)
-        aspect_breakdown = self.sentiment_analyzer.summarize_aspect_sentiment(base_review)
+        aspect_breakdown = self.sentiment_analyzer.summarize_aspect_sentiment(base_review, product_name)
         
         # Pricing
         price_comparison = None

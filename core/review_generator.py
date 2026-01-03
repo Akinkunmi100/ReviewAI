@@ -574,7 +574,7 @@ class EnhancedReviewGenerator(ReviewGenerator):
         logger.info("Analyzing sentiment...")
         sentiment = self.sentiment_analyzer.analyze_review(base_review)
         component_sentiments = self.sentiment_analyzer.analyze_text_components(base_review)
-        aspect_breakdown = self.sentiment_analyzer.summarize_aspect_sentiment(base_review)
+        aspect_breakdown = self.sentiment_analyzer.summarize_aspect_sentiment(base_review, product_name)
         
         # Derive primary price from the review's price_info (any currency), then convert to Naira
         price_comparison: Optional[PriceComparison] = None
