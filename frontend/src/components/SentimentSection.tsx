@@ -42,8 +42,27 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
             const width = Math.round(((row.avg_sentiment + 1) / 2) * 100);
             const color = sentimentColor(row.avg_sentiment);
             const pct = Math.round(row.avg_sentiment * 100);
-            const indicator = pct >= 10 ? "✅" : pct <= -10 ? "❌" : "➖";
-            const label = pct >= 10 ? "Positive" : pct <= -10 ? "Negative" : "Neutral";
+
+            // Human-friendly descriptions
+            let description: string;
+            let cssClass: string;
+            if (pct >= 50) {
+              description = "👍 Highly praised by users";
+              cssClass = "positive";
+            } else if (pct >= 10) {
+              description = "👍 Generally liked";
+              cssClass = "positive";
+            } else if (pct >= -10) {
+              description = "🤔 Mixed opinions";
+              cssClass = "neutral";
+            } else if (pct >= -50) {
+              description = "⚠️ Some concerns raised";
+              cssClass = "negative";
+            } else {
+              description = "⛔ Frequently criticized";
+              cssClass = "negative";
+            }
+
             return (
               <div key={row.aspect} className="aspect-row">
                 <div className="aspect-label">
@@ -55,8 +74,8 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
                     style={{ width: `${width}%`, backgroundColor: color }}
                   />
                 </div>
-                <div className={`aspect-score ${pct >= 10 ? 'positive' : pct <= -10 ? 'negative' : 'neutral'}`}>
-                  {indicator} {label} ({pct >= 0 ? "+" : ""}{pct}%)
+                <div className={`aspect-score ${cssClass}`}>
+                  {description}
                 </div>
               </div>
             );

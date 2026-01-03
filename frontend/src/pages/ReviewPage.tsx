@@ -160,8 +160,10 @@ const ReviewPage: React.FC = () => {
 
     const result = await fetchReview(trimmed, dataMode, userId ?? undefined);
     if (result) {
-      // Scroll to top AFTER result loads to ensure user sees result from top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll to top AFTER result renders - use setTimeout to ensure DOM updates first
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
 
       const entry: HistoryEntry = {
         name: result.product_name,
