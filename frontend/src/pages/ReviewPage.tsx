@@ -160,6 +160,9 @@ const ReviewPage: React.FC = () => {
 
     const result = await fetchReview(trimmed, dataMode, userId ?? undefined);
     if (result) {
+      // Scroll to top AFTER result loads to ensure user sees result from top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       const entry: HistoryEntry = {
         name: result.product_name,
         rating: result.predicted_rating,

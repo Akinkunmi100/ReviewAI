@@ -52,7 +52,7 @@ const SentimentSection: React.FC<{ review: EnhancedProductReview }> = ({ review 
                     style={{ width: `${width}%`, backgroundColor: color }}
                   />
                 </div>
-                <div className="aspect-score">{row.avg_sentiment.toFixed(2)}</div>
+                <div className="aspect-score">{Math.round(row.avg_sentiment * 100)}%</div>
               </div>
             );
           })}

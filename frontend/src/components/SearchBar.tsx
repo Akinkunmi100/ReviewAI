@@ -28,16 +28,16 @@ const SearchBar: React.FC<Props> = ({ onAnalyze, dataMode, setDataMode }) => {
 
   // Diverse placeholders to show universal capability
   const PLACEHOLDERS = [
-    "Iphone 15, Samsung S23 Ultra",  // Comparison example
     "Nike Air Max 90",
-    "Sony WH-1000XM5",
-    "Dyson V15 Detect",
-    "MacBook Pro M3",
-    "Levi's 501 Jeans",
-    "PlayStation 5",
+    "Sony WH-1000XM5 headphones",
+    "Dyson V15 vacuum",
     "LG C3 OLED TV",
-    "Canon EOS R5",
-    "Hp and Acer laptop bag" // Comparison example
+    "MacBook Pro M3 vs Dell XPS",  // Laptop comparison
+    "PlayStation 5",
+    "Canon EOS R5 camera",
+    "Samsung Galaxy S24",
+    "Apple Watch Ultra",
+    "Levi's 501 Jeans"
   ];
 
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
